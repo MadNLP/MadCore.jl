@@ -1,0 +1,21 @@
+name = "MadCoreLDLFactorizations"
+uuid = "877f3277-2ef7-40eb-84b4-46ec536b8592"
+version = "0.1.0"
+authors = ["MadNLP contributors"]
+
+[deps]
+MadCore = "6fc510d6-e066-472d-adc5-2ce5e9b14820"
+# Backend deps (LDLFactorizations, LinearAlgebra, SparseArrays) added in Phase C.
+
+[sources]
+MadCore = {path = "../.."}
+
+[compat]
+MadCore = "0.1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

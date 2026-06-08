@@ -1,0 +1,21 @@
+name = "MadCoreKernelAbstractions"
+uuid = "b5d449e2-bd97-4205-9c78-f5795562dab8"
+version = "0.1.0"
+authors = ["MadNLP contributors"]
+
+[deps]
+MadCore = "6fc510d6-e066-472d-adc5-2ce5e9b14820"
+# Backend deps (KernelAbstractions, Adapt, GPUArraysCore) added in Phase F.
+
+[sources]
+MadCore = {path = "../.."}
+
+[compat]
+MadCore = "0.1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

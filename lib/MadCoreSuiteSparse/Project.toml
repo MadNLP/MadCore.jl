@@ -1,0 +1,21 @@
+name = "MadCoreSuiteSparse"
+uuid = "61d78279-8fb2-45d2-ac45-b4fb79296057"
+version = "0.1.0"
+authors = ["MadNLP contributors"]
+
+[deps]
+MadCore = "6fc510d6-e066-472d-adc5-2ce5e9b14820"
+# Backend deps (SuiteSparse, LinearAlgebra, SparseArrays) added in Phase C. GPL-gated.
+
+[sources]
+MadCore = {path = "../.."}
+
+[compat]
+MadCore = "0.1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

@@ -1,0 +1,21 @@
+name = "MadCoreKrylov"
+uuid = "7f665b4a-7d0f-44cb-b242-71dd78a05402"
+version = "0.1.0"
+authors = ["MadNLP contributors"]
+
+[deps]
+MadCore = "6fc510d6-e066-472d-adc5-2ce5e9b14820"
+# Backend deps (Krylov.jl) added in Phase E (migration from lib/MadNLPKrylov).
+
+[sources]
+MadCore = {path = "../.."}
+
+[compat]
+MadCore = "0.1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

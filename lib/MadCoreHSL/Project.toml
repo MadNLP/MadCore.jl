@@ -1,0 +1,21 @@
+name = "MadCoreHSL"
+uuid = "59ba41a0-a17b-4ed0-8c06-d36d026dd60c"
+version = "0.1.0"
+authors = ["MadNLP contributors"]
+
+[deps]
+MadCore = "6fc510d6-e066-472d-adc5-2ce5e9b14820"
+# Backend deps (HSL.jl etc.) added in Phase E (migration from lib/MadNLPHSL).
+
+[sources]
+MadCore = {path = "../.."}
+
+[compat]
+MadCore = "0.1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

@@ -40,4 +40,40 @@ include("quasi_newton.jl")
 include(joinpath("KKT", "KKTsystem.jl"))
 include(joinpath("LinearSolvers", "linearsolvers.jl"))
 
+# Public API. MadCore owns the solver-agnostic surface of MadNLP (KKT systems,
+# core linear solvers, options, logger, quasi-Newton, callbacks, status). MadNLP
+# `@reexport using MadCore`s these so the historical `MadNLP.*` names resolve.
+# Explicit list (per REFACTOR_PLAN.md §4.1) — preferred over names()-introspection
+# so the exported surface is reviewable and stable.
+export
+    # KKT systems
+    AbstractKKTSystem, AbstractReducedKKTSystem, AbstractCondensedKKTSystem,
+    AbstractUnreducedKKTSystem,
+    SparseKKTSystem, SparseUnreducedKKTSystem, SparseCondensedKKTSystem,
+    ScaledSparseKKTSystem, SchurComplementKKTSystem,
+    DenseKKTSystem, DenseCondensedKKTSystem,
+    UnreducedKKTVector,
+    # Linear solvers (core; backend solvers live in lib/* subpackages)
+    AbstractLinearSolver, LapackCPUSolver, LapackOptions,
+    # Options / logging
+    MadNLPLogger, AbstractOptions,
+    # Matrix tools
+    SparseMatrixCOO, coo_to_csc,
+    # Quasi-Newton
+    AbstractHessian, ExactHessian, BFGS, DampedBFGS, CompactLBFGS,
+    QuasiNewtonOptions,
+    # Status / enums
+    Status, LogLevels, get_status_output,
+    SOLVE_SUCCEEDED, SOLVED_TO_ACCEPTABLE_LEVEL,
+    SEARCH_DIRECTION_BECOMES_TOO_SMALL, DIVERGING_ITERATES,
+    INFEASIBLE_PROBLEM_DETECTED, MAXIMUM_ITERATIONS_EXCEEDED,
+    MAXIMUM_WALLTIME_EXCEEDED, INITIAL, REGULAR, RESTORE, ROBUST,
+    LINESEARCH_SUCCEEDED, RESTORATION_FAILED, INVALID_NUMBER_DETECTED,
+    ERROR_IN_STEP_COMPUTATION, NOT_ENOUGH_DEGREES_OF_FREEDOM,
+    USER_REQUESTED_STOP, INTERNAL_ERROR, INVALID_NUMBER_OBJECTIVE,
+    INVALID_NUMBER_GRADIENT, INVALID_NUMBER_CONSTRAINTS,
+    INVALID_NUMBER_JACOBIAN, INVALID_NUMBER_HESSIAN_LAGRANGIAN,
+    # SolverCore re-export (historically exported by MadNLP)
+    solve!
+
 end # module

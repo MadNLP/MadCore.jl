@@ -157,7 +157,10 @@ include("backsolve.jl")
 include("lapack_common.jl")
 include("lapack.jl")
 
-# LDLFactorizations, MUMPS, UMFPACK, CHOLMOD now live in lib/* subpackages:
+# MUMPS ships in core: the Schur KKT system defaults its per-scenario solver to
+# MumpsSolver, so MadCore owns the MUMPS wrapper (MUMPS_seq_jll is a core dep).
+include("mumps.jl")
+
+# LDLFactorizations, UMFPACK, CHOLMOD live in lib/* subpackages:
 #   - MadCoreLDLFactorizations  (LDLSolver)
-#   - MadCoreMUMPS              (MumpsSolver)
 #   - MadCoreSuiteSparse        (UmfpackSolver, CHOLMODSolver — GPL-gated)

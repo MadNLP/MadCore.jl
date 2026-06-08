@@ -13,7 +13,7 @@ import MadCore:
     input_type, default_options, improve!, introduce, is_supported,
     InertiaException
 
-import LinearAlgebra: ldiv!, axpy!
+import LinearAlgebra: ldiv!, axpy!, issuccess
 import SparseArrays: SparseMatrixCSC, getcolptr, rowvals, nonzeros, nnz, sparse
 
 if Base.USE_GPL_LIBS

@@ -572,6 +572,42 @@ end
     Callback's initialization
 =#
 
+# Nudge the initial bounds inward by `tol` (scaled by the bound magnitude) so the
+# interior-point start is strictly feasible. Solver-agnostic; lives here in
+# MadCore because the callbacks below call it. `tol == 0` leaves bounds intact.
+function set_initial_bounds!(xl::AbstractVector{T}, xu::AbstractVector{T}, tol) where T
+    if tol > zero(T)
+        map!(
+            x->x - max(one(T), abs(x)) * tol,
+            xl, xl
+        )
+        map!(
+            x->x + max(one(T), abs(x)) * tol,
+            xu, xu
+        )
+    end
+end
+
+# Push a single variable strictly inside [xl, xu] for the interior-point start.
+# Solver-agnostic; the callback below calls it. Lives in MadCore.
+function _initialize_variables!(x::T, xl, xu, bound_push, bound_fac) where T
+    if xl!=-T(Inf) && xu!=T(Inf)
+        return min(
+            xu-min(bound_push*max(1,abs(xu)), bound_fac*(xu-xl)),
+            max(xl+min(bound_push*max(1,abs(xl)),bound_fac*(xu-xl)),x),
+        )
+    elseif xl!=-T(Inf) && xu==T(Inf)
+        return max(xl+bound_push*max(1,abs(xl)), x)
+    elseif xl==-T(Inf) && xu!=T(Inf)
+        return min(xu-bound_push*max(1,abs(xu)), x)
+    end
+    return x
+end
+
+function initialize_variables!(x, xl, xu, bound_push, bound_fac)
+    map!((x,l,u) -> _initialize_variables!(x,l,u, bound_push, bound_fac), x, x, xl, xu)
+end
+
 function _treat_equality_initialize!(equality_handler::EnforceEquality, lcon, ucon, tol) end
 function _treat_equality_initialize!(equality_handler::RelaxEquality, lcon, ucon, tol)
     return set_initial_bounds!(lcon, ucon, tol)

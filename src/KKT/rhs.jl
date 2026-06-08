@@ -182,3 +182,52 @@ primal(rhs::PrimalVector) = rhs.values
 variable(rhs::PrimalVector) = rhs.x
 slack(rhs::PrimalVector) = rhs.s
 
+#=
+    Core KKT-vector solve kernels. Solver-agnostic (operate on AbstractKKTVector /
+    AbstractKKTSystem, both owned by MadCore) and used by every KKT system's solve
+    path, so they live in MadCore. MadNLP's IPM reaches them via `@reexport`.
+=#
+@inbounds function _kktmul!(
+    w::AbstractKKTVector,
+    x::AbstractKKTVector,
+    reg,
+    du_diag,
+    l_lower,
+    u_lower,
+    l_diag,
+    u_diag,
+    alpha,
+    beta,
+)
+    primal(w) .+= alpha .* reg .* primal(x)
+    dual(w) .+= alpha .* du_diag .* dual(x)
+    w.xp_lr .-= alpha .* dual_lb(x)
+    w.xp_ur .+= alpha .* dual_ub(x)
+    dual_lb(w) .= beta .* dual_lb(w) .+ alpha .* (x.xp_lr .* l_lower .- dual_lb(x) .* l_diag)
+    dual_ub(w) .= beta .* dual_ub(w) .+ alpha .* (x.xp_ur .* u_lower .+ dual_ub(x) .* u_diag)
+    return
+end
+
+@inbounds function reduce_rhs!(
+    xp_lr, wl, l_diag,
+    xp_ur, wu, u_diag,
+)
+    xp_lr .-= wl ./ l_diag
+    xp_ur .-= wu ./ u_diag
+    return
+end
+function reduce_rhs!(kkt::AbstractKKTSystem, d::AbstractKKTVector)
+    reduce_rhs!(
+        d.xp_lr, dual_lb(d), kkt.l_diag,
+        d.xp_ur, dual_ub(d), kkt.u_diag,
+    )
+end
+
+function finish_aug_solve!(kkt::AbstractKKTSystem, d::AbstractKKTVector)
+    dlb = dual_lb(d)
+    dub = dual_ub(d)
+    dlb .= (.-dlb .+ kkt.l_lower .* d.xp_lr) ./ kkt.l_diag
+    dub .= (  dub .- kkt.u_lower .* d.xp_ur) ./ kkt.u_diag
+    return
+end
+

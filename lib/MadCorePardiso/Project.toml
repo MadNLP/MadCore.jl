@@ -4,18 +4,21 @@ version = "0.1.0"
 authors = ["MadNLP contributors"]
 
 [deps]
+Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+MKL_jll = "856f044c-d86e-5d09-b602-aeab76dc8ba7"
 MadCore = "6fc510d6-e066-472d-adc5-2ce5e9b14820"
-# Backend deps (MKL_jll, libdl, ...) added in Phase E (migration from lib/MadNLPPardiso).
 
 [sources]
 MadCore = {path = "../.."}
 
 [compat]
+MKL_jll = "2021, 2022, 2023, 2024, 2025"
 MadCore = "0.1"
 julia = "1.10"
 
 [extras]
+MadNLPTests = "b52a2a03-04ab-4a5f-9698-6a2deff93217"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["MadNLPTests", "Test"]

@@ -13,6 +13,29 @@ function (cb::NoUserCallback)(solver, mode::AbstractUserCallbackStatus)
     return true
 end
 
+# Parse an option value into a field's declared type, and bulk-set options on an
+# AbstractOptions from a key=>value collection (returning the leftover keys).
+# Solver-agnostic; lives in MadCore so the linear-solver backends in lib/* (HSL,
+# Pardiso, GPU) and MadNLP's IPM all share one set_options!. Defined after
+# AbstractUserCallback since one parse_option method dispatches on it.
+parse_option(::Type{Module}, str::String) = eval(Symbol(str))
+parse_option(::Type{<:AbstractUserCallback}, f::Any) = f
+parse_option(type::Type{T}, i::Int64) where {T<:Enum} = type(i)
+
+function set_options!(opt::AbstractOptions, options)
+    other_options = Dict{Symbol, Any}()
+    for (key, val) in options
+        if hasproperty(opt, key)
+            T = fieldtype(typeof(opt), key)
+            val isa T ? setproperty!(opt,key,val) :
+                setproperty!(opt,key,parse_option(T,val))
+        else
+            other_options[key] = val
+        end
+    end
+    return other_options
+end
+
 
 # MadNLPLogger
 @kwdef mutable struct MadNLPLogger
